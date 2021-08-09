@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@700&display=swap');
+
+body {
+  margin: 0 auto;
+}
+
+/* #region tic tac toe css */
+.tictactoe {
+  /* display: grid; */
+  gap: 5px;
+  justify-content: center;
+  padding: 50px;
+  font-family: 'Rubik', sans-serif;
+  display: none;
+}
+
+/* the '>' represents the hierachy */
+.tictactoe > .title {
+  font-size: 32px;
+  color: #1f3177;
+}
+
+.tictactoe > #board {
+  display: grid;
+  width: 300px;
+  height: 300px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: -0px 5px 10px #bebebe;
+  justify-content: center;
+}
+
+.tictactoe > #board > .square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #172456;
+  font-size: 30px;
+  font-family: 'Press Start 2P', cursive;
+  color: white;
+}
+
+.tictactoe > #board > .square:hover {
+  cursor: pointer;
+  background-color: #1f3177;
+}
+/* #endregion */
+
+/* #region diceroller css */
+.diceroller {
+  display: grid;
+  gap: 5px;
+  justify-content: center;
+  padding: 50px;
+  font-family: 'Rubik', sans-serif;
+}
+
+.diceroller > .title {
+  font-size: 32px;
+  color: #1f3177;
+}
+
+.diceroller > #players {
+  display: flex;
+}
+.diceroller > #players > div {
+  padding-right: 10px;
+}
+
+.diceroller > div > .dice {
+  width: 50px;
+  height: 50px;
+  margin: 2px;
+  color: white;
+}
+
+/* #endregion */
