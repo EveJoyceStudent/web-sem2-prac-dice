@@ -6,12 +6,12 @@ body {
 
 /* #region tic tac toe css */
 .tictactoe {
-  /* display: grid; */
+  display: grid;
+  /* display: none; */
   gap: 5px;
   justify-content: center;
   padding: 50px;
   font-family: 'Rubik', sans-serif;
-  display: none;
 }
 
 /* the '>' represents the hierachy */
@@ -51,9 +51,9 @@ body {
 
 /* #region diceroller css */
 .diceroller {
-  display: grid;
-  gap: 5px;
-  justify-content: center;
+  display: block;
+  width: 340px;
+  margin: auto;
   padding: 50px;
   font-family: 'Rubik', sans-serif;
 }
@@ -61,13 +61,18 @@ body {
 .diceroller > .title {
   font-size: 32px;
   color: #1f3177;
+  margin: 0px;
+}
+.diceroller > div {
+  padding: 3px;
+  margin: 5px;
 }
 
 .diceroller > #players {
   display: flex;
 }
 .diceroller > #players > div {
-  padding-right: 10px;
+  padding-right: 20px;
 }
 
 .diceroller .die {

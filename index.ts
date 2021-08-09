@@ -186,10 +186,14 @@ let p2: Player = new Player('Player 2');
 let players: Player[] = [p1, p2];
 let currentplayerid = 0;
 
-let diceSides=0;
-let numDice=0;
-let scoreToWin=0;
+// variables for the number of sides on each dice number of dice per roll
+let diceSides = 0;
+let numDice = 0;
 
+// score required to win
+let scoreToWin = 0;
+
+// elements used to show/hide the setup and game sections at game start/end
 const setupDiv: HTMLElement = document.getElementById('setup');
 const playersDiv: HTMLElement = document.getElementById('players');
 const turnDiv: HTMLElement = document.getElementById('turn');
@@ -210,21 +214,25 @@ const p1colour: HTMLSelectElement = <HTMLSelectElement>(
 const p2colour: HTMLSelectElement = <HTMLSelectElement>(
   document.getElementById('player2-colour')
 );
+
+// dice info input fields
 const diceSelect: HTMLSelectElement = <HTMLSelectElement>(
   document.getElementById('dice-slt')
 );
 const diceNoInput: HTMLInputElement = <HTMLInputElement>(
   document.getElementById('dice-no-inp')
 );
+
+// score to win input field
 const scoreNoInput: HTMLInputElement = <HTMLInputElement>(
   document.getElementById('score-no-inp')
 );
 
-
-
+// start game button, with onclick behaviour
 const startButton: HTMLElement = document.getElementById('start-btn');
 startButton.addEventListener('click', startGame);
 
+// player names
 const p1name: HTMLElement = document.getElementById('player1-name');
 const p2name: HTMLElement = document.getElementById('player2-name');
 
@@ -281,23 +289,29 @@ function enumInit() {
 }
 enumInit();
 
-function startGame(){
+/**
+ * called by the start game button, hides setup, assigns setup input values to variables used and displays game elements
+ */
+function startGame() {
+  // hide setup
   setupDiv.setAttribute('style', `display: none`);
 
-  p1.name=p1nameInput.value;
-  p2.name=p2nameInput.value;
+  // set player names
+  p1.name = p1nameInput.value;
+  p2.name = p2nameInput.value;
 
-  p1name.innerHTML=p1.name;
-  p2name.innerHTML=p2.name;
-  
-  diceSides=Number(diceSelect.value);
-  numDice=Number(diceNoInput.value);
-  scoreToWin=Number(scoreNoInput.value);
+  // display set player names
+  p1name.innerHTML = p1.name;
+  p2name.innerHTML = p2.name;
 
+  // setup dice and win value
+  diceSides = Number(diceSelect.value);
+  numDice = Number(diceNoInput.value);
+  scoreToWin = Number(scoreNoInput.value);
+
+  // display game
   playersDiv.setAttribute('style', `display:''`);
   turnDiv.setAttribute('style', `display:''`);
-
-  diceDiv.innerHTML='';
   diceDiv.setAttribute('style', `display:''`);
 }
 
@@ -309,29 +323,32 @@ function roll() {
   // select the current player
   let currentplayer = players[currentplayerid];
 
-  diceDiv.innerHTML='';
+  // clear previous roll
+  diceDiv.innerHTML = '';
+
   // update owner/roller of dice
   let rolledDisplay = document.createElement('div');
   rolledDisplay.innerHTML = `Dice rolled by ${currentplayer.name}`;
   diceDiv.appendChild(rolledDisplay);
 
-  for(let n=0; n<numDice; n++){
+  for (let n = 0; n < numDice; n++) {
     // roll a (n sided) dice
-  const dice = Math.floor(Math.random() * diceSides) + 1;
+    const dice = Math.floor(Math.random() * diceSides) + 1;
 
-  // update dice display
-  let dieDiv: HTMLElement = document.createElement('div');
-  dieDiv.innerHTML = String(dice);
-  dieDiv.classList.add('die');
-  dieDiv.setAttribute('style', `background-color: ${currentplayer.colour}`);
-  diceDiv.appendChild(dieDiv);
+    // update dice display
+    let dieDiv: HTMLElement = document.createElement('div');
+    dieDiv.innerHTML = String(dice);
+    dieDiv.classList.add('die');
+    dieDiv.setAttribute('style', `background-color: ${currentplayer.colour}`);
+    diceDiv.appendChild(dieDiv);
 
-  // record the roll against the player
-  currentplayer.rolls.push(dice);
-  currentplayer.score += dice;
+    // record the roll against the player
+    currentplayer.rolls.push(dice);
+    currentplayer.score += dice;
   }
 
   // check for winner
+  // win state
   if (currentplayer.score >= scoreToWin) {
     window.alert(`Winner is ${currentplayer.name}`);
     // update previous game winner
@@ -345,15 +362,18 @@ function roll() {
     }
     // set player turn to player 1
     currentplayerid = 0;
-    
+
+    // display setup
     setupDiv.setAttribute('style', `display:''`);
-    
+
+    // hide game
     playersDiv.setAttribute('style', `display:none`);
     turnDiv.setAttribute('style', `display:none`);
     diceDiv.setAttribute('style', `display:none`);
-
+    // clear last dice roll (so it is not displayed at the start of next game)
+    diceDiv.innerHTML = '';
   } else {
-    // change turn
+    // not win state - change turn
     // move to next player (if up to final player, return to first player)
     if (currentplayerid === players.length - 1) {
       currentplayerid = 0;
