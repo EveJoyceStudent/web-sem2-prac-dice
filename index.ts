@@ -1,6 +1,7 @@
 // Import stylesheets
 import './style.css';
 import { Colours } from './models/colours.enum';
+import { Dice } from './models/dice.enum';
 import { Player } from './models/player';
 
 // #region tic tac toe
@@ -185,7 +186,23 @@ let p2: Player = new Player('Player 2');
 let players: Player[] = [p1, p2];
 let currentplayerid = 0;
 
+let diceSides=0;
+let numDice=0;
+let scoreToWin=0;
+
+const setupDiv: HTMLElement = document.getElementById('setup');
+const playersDiv: HTMLElement = document.getElementById('players');
+const turnDiv: HTMLElement = document.getElementById('turn');
+const diceDiv: HTMLElement = document.getElementById('dice');
+
 // HTML elements (in order they appear on page)
+// Player name input fields
+const p1nameInput: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('player1-name-inp')
+);
+const p2nameInput: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('player2-name-inp')
+);
 // player colour dropdowns (values assigned in colourInit() function)
 const p1colour: HTMLSelectElement = <HTMLSelectElement>(
   document.getElementById('player1-colour')
@@ -193,6 +210,23 @@ const p1colour: HTMLSelectElement = <HTMLSelectElement>(
 const p2colour: HTMLSelectElement = <HTMLSelectElement>(
   document.getElementById('player2-colour')
 );
+const diceSelect: HTMLSelectElement = <HTMLSelectElement>(
+  document.getElementById('dice-slt')
+);
+const diceNoInput: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('dice-no-inp')
+);
+const scoreNoInput: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('score-no-inp')
+);
+
+
+
+const startButton: HTMLElement = document.getElementById('start-btn');
+startButton.addEventListener('click', startGame);
+
+const p1name: HTMLElement = document.getElementById('player1-name');
+const p2name: HTMLElement = document.getElementById('player2-name');
 
 // player scores
 const p1score: HTMLElement = document.getElementById('player1-score');
@@ -205,17 +239,21 @@ const turnDisplay: HTMLElement = document.getElementById('turn-player');
 const rollButton: HTMLElement = document.getElementById('roll-btn');
 rollButton.addEventListener('click', roll);
 
-// dice element, plus element for displaying name of player associated with the on screen dice
-const diceDiv: HTMLElement = document.getElementById('dicedisplay');
-const rolledDisplay: HTMLElement = document.getElementById('rolled-player');
-
 // display the winner of the previous game
 const winner: HTMLElement = document.getElementById('winner');
 
 /**
- * add options to the player colour dropdowns based on colour enum
+ * add options to the dice dropdown and player colour dropdowns based on dice and colour enums
  */
-function colourInit() {
+function enumInit() {
+  for (let d in Dice) {
+    if (isNaN(Number(d))) {
+      let newOption: HTMLOptionElement = document.createElement('option');
+      newOption.innerHTML = d;
+      newOption.value = Dice[d].toString();
+      diceSelect.add(newOption);
+    }
+  }
   // player 1 colour dropdown
   let count = 0;
   for (let c in Colours) {
@@ -241,7 +279,27 @@ function colourInit() {
   // set player 2 to the second option so by default players have different colours
   p2colour.value = '1';
 }
-colourInit();
+enumInit();
+
+function startGame(){
+  setupDiv.setAttribute('style', `display: none`);
+
+  p1.name=p1nameInput.value;
+  p2.name=p2nameInput.value;
+
+  p1name.innerHTML=p1.name;
+  p2name.innerHTML=p2.name;
+  
+  diceSides=Number(diceSelect.value);
+  numDice=Number(diceNoInput.value);
+  scoreToWin=Number(scoreNoInput.value);
+
+  playersDiv.setAttribute('style', `display:''`);
+  turnDiv.setAttribute('style', `display:''`);
+
+  diceDiv.innerHTML='';
+  diceDiv.setAttribute('style', `display:''`);
+}
 
 function roll() {
   // set player colours to the values in the dropdowns (since dropdowns are not fixed per game)
@@ -251,20 +309,30 @@ function roll() {
   // select the current player
   let currentplayer = players[currentplayerid];
 
-  // roll a (6 sided) dice
-  const dice = Math.floor(Math.random() * 5) + 1;
-
-  // update dice display and owner/roller of dice
+  diceDiv.innerHTML='';
+  // update owner/roller of dice
+  let rolledDisplay = document.createElement('div');
   rolledDisplay.innerHTML = `Dice rolled by ${currentplayer.name}`;
-  diceDiv.setAttribute('style', `background-color: ${currentplayer.colour}`);
-  diceDiv.innerHTML = String(dice);
+  diceDiv.appendChild(rolledDisplay);
+
+  for(let n=0; n<numDice; n++){
+    // roll a (n sided) dice
+  const dice = Math.floor(Math.random() * diceSides) + 1;
+
+  // update dice display
+  let dieDiv: HTMLElement = document.createElement('div');
+  dieDiv.innerHTML = String(dice);
+  dieDiv.classList.add('die');
+  dieDiv.setAttribute('style', `background-color: ${currentplayer.colour}`);
+  diceDiv.appendChild(dieDiv);
 
   // record the roll against the player
   currentplayer.rolls.push(dice);
   currentplayer.score += dice;
+  }
 
   // check for winner
-  if (currentplayer.score >= 20) {
+  if (currentplayer.score >= scoreToWin) {
     window.alert(`Winner is ${currentplayer.name}`);
     // update previous game winner
     winner.innerHTML = `Winner of last game was ${
@@ -277,6 +345,13 @@ function roll() {
     }
     // set player turn to player 1
     currentplayerid = 0;
+    
+    setupDiv.setAttribute('style', `display:''`);
+    
+    playersDiv.setAttribute('style', `display:none`);
+    turnDiv.setAttribute('style', `display:none`);
+    diceDiv.setAttribute('style', `display:none`);
+
   } else {
     // change turn
     // move to next player (if up to final player, return to first player)

@@ -70,11 +70,22 @@ body {
   padding-right: 10px;
 }
 
-.diceroller > div > .dice {
+.diceroller .die {
   width: 50px;
   height: 50px;
   margin: 2px;
   color: white;
+  display: inline-block;
+}
+
+.diceroller button {
+  background-color: #1f3177;
+  border: none;
+  color: white;
+  padding: 10px 22px;
+  text-align: center;
+  font-family: 'Rubik', sans-serif;
+  display: inline-block;
 }
 
 /* #endregion */
